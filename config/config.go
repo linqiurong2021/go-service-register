@@ -8,7 +8,6 @@ type AppConfig struct {
 	Host           string `ini:"host"`
 	Port           uint   `ini:"port"`
 	*MySQLConfig   `ini:"mysql"`
-	*RedisConfig   `ini:"redis"`
 	*GatewayConfig `ini:"gateway"`
 }
 
@@ -20,14 +19,6 @@ type MySQLConfig struct {
 	Host     string `ini:"host"`
 	Port     int    `ini:"port"`
 	Charset  string `ini:"charset"`
-}
-
-// RedisConfig redis配置文件
-type RedisConfig struct {
-	Host     string `ini:"host"`
-	Port     uint   `ini:"port"`
-	Password string `ini:"password"`
-	Database int    `ini:"database"`
 }
 
 // GatewayConfig 网关配置

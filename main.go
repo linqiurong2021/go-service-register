@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/linqiurong2021/go-service-register/config"
+	"github.com/linqiurong2021/go-gateway/config"
+	"github.com/linqiurong2021/go-gateway/mysql"
 	"github.com/linqiurong2021/go-service-register/model"
-	"github.com/linqiurong2021/go-service-register/mysql"
 	"github.com/linqiurong2021/go-service-register/server"
 	"github.com/linqiurong2021/go-service-register/validator"
 )
@@ -16,6 +16,7 @@ func main() {
 		fmt.Printf("load config from file falure !, err:%v\n", err)
 		return
 	}
+
 	if err := mysql.InitMySQL(config.Conf.MySQLConfig); err != nil {
 		fmt.Printf("init mysql failed, err:%v\n", err)
 		return

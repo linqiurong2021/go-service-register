@@ -5,9 +5,10 @@
     },
     {
       "path": "../go-gateway"
+    },
+    {
+      "path": "../gin-arcgis"
     }
   ],
   "settings": {}
 }
-
-
