@@ -8,6 +8,9 @@
     },
     {
       "path": "../gin-arcgis"
+    },
+    {
+      "path": "../../../.Trash/models"
     }
   ],
   "settings": {}

@@ -1,6 +1,8 @@
 package model
 
-import "github.com/linqiurong2021/go-gateway/mysql"
+import (
+	"github.com/linqiurong2021/go-service-register/mysql"
+)
 
 // Create 创建
 func (s *Service) Create(in *Service) (*Service, error) {

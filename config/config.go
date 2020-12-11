@@ -4,11 +4,10 @@ import "gopkg.in/ini.v1"
 
 // AppConfig App配置项
 type AppConfig struct {
-	Release        bool   `ini:"release"`
-	Host           string `ini:"host"`
-	Port           uint   `ini:"port"`
-	*MySQLConfig   `ini:"mysql"`
-	*GatewayConfig `ini:"gateway"`
+	Release      bool   `ini:"release"`
+	Host         string `ini:"host"`
+	Port         uint   `ini:"port"`
+	*MySQLConfig `ini:"mysql"`
 }
 
 // MySQLConfig 数据库配置项
@@ -19,12 +18,6 @@ type MySQLConfig struct {
 	Host     string `ini:"host"`
 	Port     int    `ini:"port"`
 	Charset  string `ini:"charset"`
-}
-
-// GatewayConfig 网关配置
-type GatewayConfig struct {
-	Host string `ini:"host"`
-	Port uint   `ini:"prot"`
 }
 
 // Conf 配置

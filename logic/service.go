@@ -32,14 +32,8 @@ func (s *Service) GetAllService() ([]*model.Service, error) {
 	return serve.GetAllService()
 }
 
-// Create 获取所有服务
-func (s *Service) Create(c *gin.Context) (*model.Service, error) {
-	var inService *model.Service
-	err := c.BindJSON(&inService)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, util.ValidateFailure(err))
-		return nil, nil
-	}
+// CreateData 新增数据
+func (s *Service) CreateData(inService *model.Service) (*model.Service, error) {
 	// 判断是否存在 如果已存在则直接返回
 	service, err := serve.GetServiceByHostAndPortAndURL(inService.Host, inService.Port, inService.URL)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -55,6 +49,19 @@ func (s *Service) Create(c *gin.Context) (*model.Service, error) {
 	if err != nil {
 		return nil, err
 	}
+	return service, nil
+}
+
+// Create 获取所有服务
+func (s *Service) Create(c *gin.Context) (*model.Service, error) {
+	var inService *model.Service
+	err := c.BindJSON(&inService)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, util.ValidateFailure(err))
+		return nil, nil
+	}
+	//
+	service, err := s.CreateData(inService)
 	c.JSON(http.StatusOK, util.Success("create success", ""))
 	return service, nil
 }

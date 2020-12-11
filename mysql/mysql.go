@@ -24,6 +24,5 @@ func InitMySQL(cfg *config.MySQLConfig) (err error) {
 	if !config.Conf.Release {
 		DB = DB.Debug()
 	}
-
 	return
 }
