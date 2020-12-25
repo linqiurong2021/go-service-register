@@ -2,55 +2,44 @@ package router
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/linqiurong2021/go-service-register/config"
-	"github.com/linqiurong2021/go-service-register/controller"
+	"github.com/linqiurong2021/go-service-register/etcd"
 	"github.com/linqiurong2021/go-service-register/logic"
-	"github.com/linqiurong2021/go-service-register/model"
 )
 
-//
-var register *controller.Register
-
-// Router Router
-type Router struct{}
-
-// RegisterRouter 注册路由
-func (r *Router) RegisterRouter(engine *gin.Engine) {
-	service := engine.Group("/service")
-	// 跨域问题
-	service.POST("/register", register.Register)     // 新增
-	service.POST("/unregister", register.UnRegister) // 删除
-}
-
-// RegisterToGateway 注册到网关
-func (r *Router) RegisterToGateway() {
+// InitRouter 注册路由
+func InitRouter(r *gin.Engine) {
 	//
-	var logic = new(logic.Service)
+	service := r.Group("/service")
+	service.POST("/register", func(c *gin.Context) {
+		//
+		var newConf *etcd.EtcdProxyConfItem
+		err := c.BindJSON(&newConf)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+		}
+		fmt.Printf("获取到的参数:%#v\n", newConf)
+		// 已有的配置项
+		hasConfList, err := logic.GetHasConfItemList()
+		if err != nil {
+			fmt.Printf("GetHasConfItemList err %s\n", err.Error())
+			panic(err)
+		}
+		newConfStr, err := logic.AddConfItem(hasConfList, newConf)
+		if err != nil {
+			fmt.Printf("AddConfItem err %s\n", err.Error())
+			panic(err)
+		}
+		//
+		_, err = etcd.Set(config.Conf.EtcdConfig.Key, newConfStr)
 
-	host := config.Conf.Host
-	port := config.Conf.Port
-
-	fmt.Printf("%s:%d", host, port)
-	//
-
-	serviceData := &model.Service{
-		Name:  "服务注册服务",
-		Host:  host,
-		Port:  port,
-		URL:   "/service/register",
-		Alive: true,
-	}
-	// 有判断如果已存在则不再添加
-	_, err := logic.CreateData(serviceData)
-	if err != nil {
-		fmt.Println("Register Service Error: ", err.Error())
-	}
-	serviceData.ID = serviceData.ID + 1
-	serviceData.URL = "/service/unregister"
-	_, err = logic.CreateData(serviceData)
-	if err != nil {
-		fmt.Println("Register Service Error: ", err.Error())
-	}
+		if err != nil {
+			fmt.Println("etcd set failure , err : ", err.Error())
+			return
+		}
+		c.JSON(http.StatusOK, "ok")
+	})
 }
